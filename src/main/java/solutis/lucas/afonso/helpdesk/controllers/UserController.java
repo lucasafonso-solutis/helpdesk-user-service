@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -59,6 +60,15 @@ public class UserController {
     public ResponseEntity<UserDTO> update(@PathVariable Long id,@RequestBody UserDTO userDTO) {
         return userService.update(id, userDTO)
                 .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Deactivate User", description = "Deactivate User")
+    @ApiResponse(responseCode = "204", description = "User deactivated")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+        return userService.deactivateUser(id)
+                .map(user -> ResponseEntity.noContent().<Void>build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
