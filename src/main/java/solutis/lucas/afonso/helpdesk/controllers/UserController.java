@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.created(uri).body(user);
     }
 
-    @Operation(summary = "List user by ID", description = "List User By ID")
+    @Operation(summary = "List User by ID", description = "List User By ID")
     @ApiResponse(responseCode = "200", description = "List User By ID")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
