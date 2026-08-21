@@ -1,5 +1,6 @@
 package solutis.lucas.afonso.helpdesk.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -25,5 +26,9 @@ public class UserService {
 
     public Optional<UserDTO> findById(Long id) {
         return this.userRepository.findById(id).map(UserDTO::new);
+    }
+
+    public List<UserDTO> list() {
+        return this.userRepository.findAll().stream().map(UserDTO::new).toList();
     }
 }

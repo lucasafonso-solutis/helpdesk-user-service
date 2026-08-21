@@ -1,6 +1,7 @@
 package solutis.lucas.afonso.helpdesk.controllers;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,5 +43,12 @@ public class UserController {
         return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "List All Users")
+    @ApiResponse(responseCode = "200", description = "List All Users")
+    @GetMapping
+    public List<UserDTO> list() {
+        return this.userService.list();
     }
 }
