@@ -3,6 +3,8 @@ package solutis.lucas.afonso.helpdesk.controllers;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +29,18 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Create User")
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriComponentsBuilder) {
-        UserDTO user = this.userService.createUser(userDTO);
+        UserDTO user = this.userService.create(userDTO);
         URI uri = uriComponentsBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
 
         return ResponseEntity.created(uri).body(user);
+    }
+
+    @Operation(summary = "List user by ID", description = "List User By ID")
+    @ApiResponse(responseCode = "200", description = "List User By ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
+        return userService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

@@ -1,5 +1,7 @@
 package solutis.lucas.afonso.helpdesk.services;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import solutis.lucas.afonso.helpdesk.dto.UserDTO;
@@ -14,10 +16,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserDTO create(UserDTO userDTO) {
         User user = new User(userDTO);
         user = userRepository.save(user);
 
         return new UserDTO(user);
+    }
+
+    public Optional<UserDTO> findById(Long id) {
+        return this.userRepository.findById(id).map(UserDTO::new);
     }
 }
