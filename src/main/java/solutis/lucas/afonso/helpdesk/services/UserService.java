@@ -31,4 +31,13 @@ public class UserService {
     public List<UserDTO> list() {
         return this.userRepository.findAll().stream().map(UserDTO::new).toList();
     }
+
+    public Optional<UserDTO> update(Long id, UserDTO userDTO) {
+        return userRepository.findById(id).map(user -> {
+            user.setName(userDTO.name());
+            user.setEmail(userDTO.email());
+            user.setUserRole(userDTO.userRole());
+            return new UserDTO(userRepository.save(user));
+        });
+    }
 }
