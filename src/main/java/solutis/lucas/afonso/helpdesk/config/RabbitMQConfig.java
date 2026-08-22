@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String TECHNICIAN_VALIDATION_QUEUE = "user.technician.find";
+    public static final String TECHNICIAN_ASSIGNMENT_QUEUE = "user.technician.assignment";
 
     @Bean
     public DirectExchange helpdeskExchange(@Value("${helpdesk.rabbitmq.exchange}") String exchangeName) {
@@ -22,15 +22,15 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue technicianValidationQueue() {
-        return QueueBuilder.durable(TECHNICIAN_VALIDATION_QUEUE).build();
+    public Queue technicianAssignmentQueue() {
+        return QueueBuilder.durable(TECHNICIAN_ASSIGNMENT_QUEUE).build();
     }
 
     @Bean
-    public Binding technicianValidationBinding(Queue technicianValidationQueue,
+    public Binding technicianAssignmentBinding(Queue technicianAssignmentQueue,
             DirectExchange helpdeskExchange,
             @Value("${helpdesk.rabbitmq.routing-key}") String routingKey) {
-        return BindingBuilder.bind(technicianValidationQueue)
+        return BindingBuilder.bind(technicianAssignmentQueue)
                 .to(helpdeskExchange)
                 .with(routingKey);
     }
