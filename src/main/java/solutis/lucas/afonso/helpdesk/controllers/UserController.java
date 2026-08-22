@@ -43,6 +43,8 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         return userService.findById(id)
+                .stream()
+                .findFirst()
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -59,6 +61,8 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id,@RequestBody UserDTO userDTO) {
         return userService.update(id, userDTO)
+                .stream()
+                .findFirst()
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -68,6 +72,8 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         return userService.deactivateUser(id)
+                .stream()
+                .findFirst()
                 .map(user -> ResponseEntity.noContent().<Void>build())
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

@@ -24,10 +24,11 @@ public class UserService {
         return new UserDTO(user);
     }
 
-    public Optional<UserDTO> findById(Long id) {
+    public List<UserDTO> findById(Long id) {
         return this.userRepository.findById(id)
+            .stream()
             .filter(user -> Boolean.TRUE.equals(user.getActive()))
-            .map(UserDTO::new);
+            .map(UserDTO::new).toList();
     }
 
     public List<UserDTO> list() {
@@ -37,19 +38,21 @@ public class UserService {
             .toList();
     }
 
-    public Optional<UserDTO> update(Long id, UserDTO userDTO) {
-        return userRepository.findById(id).map(user -> {
+    public List<UserDTO> update(Long id, UserDTO userDTO) {
+        return userRepository.findById(id)
+            .stream()
+            .map(user -> {
             user.setName(userDTO.name());
             user.setEmail(userDTO.email());
             user.setUserRole(userDTO.userRole());
             return new UserDTO(userRepository.save(user));
-        });
+        }).toList();
     }
 
-    public Optional<UserDTO> deactivateUser(Long id) {
-        return userRepository.findById(id).map(user -> {
+    public List<UserDTO> deactivateUser(Long id) {
+        return userRepository.findById(id).stream().map(user -> {
             user.setActive(false);
             return new UserDTO(userRepository.save(user));
-        });
+        }).toList();
     }
 }
