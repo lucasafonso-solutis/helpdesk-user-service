@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "name": "helpdesk.rabbitmq.exchange",
+      "type": "java.lang.String",
+      "description": "Nome da exchange RabbitMQ usada para comunicacao entre os microservicos.",
+      "defaultValue": "helpdesk.events"
+    },
+    {
+      "name": "helpdesk.rabbitmq.routing-key",
+      "type": "java.lang.String",
+      "description": "Routing key usada para localizar usuarios tecnicos.",
+      "defaultValue": "user.technician.find"
+    }
+  ]
+}
