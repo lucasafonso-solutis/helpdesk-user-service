@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @Operation(summary = "Create User", description = "Create User")
-    @ApiResponse(responseCode = "200", description = "Create User")
+    @ApiResponse(responseCode = "201", description = "Create User")
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriComponentsBuilder) {
         UserDTO user = this.userService.create(userDTO);
