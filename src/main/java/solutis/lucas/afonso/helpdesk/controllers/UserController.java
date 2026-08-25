@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import solutis.lucas.afonso.helpdesk.dto.UserDTO;
 import solutis.lucas.afonso.helpdesk.services.UserService;
 
@@ -31,7 +32,7 @@ public class UserController {
     @Operation(summary = "Create User", description = "Create User")
     @ApiResponse(responseCode = "201", description = "Create User")
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO, UriComponentsBuilder uriComponentsBuilder) {
         UserDTO user = this.userService.create(userDTO);
         URI uri = uriComponentsBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
 
@@ -59,7 +60,7 @@ public class UserController {
     @Operation(summary = "Update User", description = "Update User")
     @ApiResponse(responseCode = "200", description = "Update User")
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id,@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
         return userService.update(id, userDTO)
                 .stream()
                 .findFirst()

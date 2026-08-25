@@ -1,6 +1,8 @@
 package solutis.lucas.afonso.helpdesk.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,16 +32,21 @@ public class TechnicianAssignmentListener {
     }
 
     @RabbitListener(queues = RabbitMQConfig.TECHNICIAN_ASSIGNMENT_QUEUE)
-    public void assign(String payload) throws Exception {
-        TechnicianAssignmentEvent event = objectMapper.readValue(payload, TechnicianAssignmentEvent.class);
-        boolean accepted = event.ticketId() != null && event.technicianId() != null
-                && userRepository.findById(event.technicianId())
-                        .filter(user -> Boolean.TRUE.equals(user.getActive()))
-                        .filter(user -> UserRole.TECHNICIAN.equals(user.getUserRole()))
-                        .isPresent();
+    public void assign(String payload) {
+        try {
+            TechnicianAssignmentEvent event = objectMapper.readValue(payload, TechnicianAssignmentEvent.class);
+            boolean accepted = event.ticketId() != null && event.technicianId() != null
+                    && userRepository.findById(event.technicianId())
+                            .filter(user -> Boolean.TRUE.equals(user.getActive()))
+                            .filter(user -> UserRole.TECHNICIAN.equals(user.getUserRole()))
+                            .isPresent();
 
-        TechnicianAssignmentResult result = new TechnicianAssignmentResult(
-                event.ticketId(), event.technicianId(), accepted);
-        rabbitTemplate.convertAndSend(exchange, responseRoutingKey, objectMapper.writeValueAsString(result));
+            TechnicianAssignmentResult result = new TechnicianAssignmentResult(
+                    event.ticketId(), event.technicianId(), accepted);
+            rabbitTemplate.convertAndSend(exchange, responseRoutingKey, objectMapper.writeValueAsString(result));
+        } catch (JsonProcessingException exception) {
+            throw new AmqpRejectAndDontRequeueException(
+                    "Invalid technician assignment event", exception);
+        }
     }
 }
