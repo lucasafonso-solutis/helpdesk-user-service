@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import solutis.lucas.afonso.helpdesk.dto.UserDTO;
+import solutis.lucas.afonso.helpdesk.dto.UserForm;
 import solutis.lucas.afonso.helpdesk.services.UserService;
 
 @RestController
@@ -32,8 +33,8 @@ public class UserController {
     @Operation(summary = "Create User", description = "Create User")
     @ApiResponse(responseCode = "201", description = "Create User")
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO, UriComponentsBuilder uriComponentsBuilder) {
-        UserDTO user = this.userService.create(userDTO);
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserForm userForm, UriComponentsBuilder uriComponentsBuilder) {
+        UserDTO user = this.userService.create(userForm);
         URI uri = uriComponentsBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
 
         return ResponseEntity.created(uri).body(user);

@@ -3,21 +3,28 @@ package solutis.lucas.afonso.helpdesk.services;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import solutis.lucas.afonso.helpdesk.dto.UserDTO;
+import solutis.lucas.afonso.helpdesk.dto.UserForm;
 import solutis.lucas.afonso.helpdesk.entities.User;
 import solutis.lucas.afonso.helpdesk.repository.UserRepository;
 
 @Service
 public class UserService {
     private UserRepository userRepository;
+    private PasswordEncoder passwordEnconder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEnconder = passwordEncoder;
     }
 
-    public UserDTO create(UserDTO userDTO) {
-        User user = new User(userDTO);
+    public UserDTO create(UserForm userForm) {
+        String encryptedPassword = passwordEnconder.encode(userForm.passwordHash());
+        UserForm encryptedUserForm = new UserForm(userForm.id(), userForm.name(), userForm.email(), encryptedPassword,
+                                                    userForm.userRole(), userForm.active(), userForm.createdAt());
+        User user = new User(encryptedUserForm);
         user = userRepository.save(user);
 
         return new UserDTO(user);
