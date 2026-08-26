@@ -37,14 +37,9 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/users/**").hasAnyRole("CLIENT", "TECHNICIAN", "ADMIN")
-                .requestMatchers("/tickets/**").hasAnyRole("CLIENT", "TECHNICIAN", "ADMIN")
-                .requestMatchers("/notifications/**").hasAnyRole("CLIENT", "TECHNICIAN", "ADMIN")
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
+            .anyRequest().authenticated()
+            ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

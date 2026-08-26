@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class UserController {
 
     @Operation(summary = "Create User", description = "Create User")
     @ApiResponse(responseCode = "201", description = "Create User")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserForm userForm, UriComponentsBuilder uriComponentsBuilder) {
         UserDTO user = this.userService.create(userForm);
@@ -42,6 +44,7 @@ public class UserController {
 
     @Operation(summary = "List User by ID", description = "List User By ID")
     @ApiResponse(responseCode = "200", description = "List User By ID")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         return userService.findById(id)
@@ -53,6 +56,7 @@ public class UserController {
 
     @Operation(summary = "List All Users")
     @ApiResponse(responseCode = "200", description = "List All Users")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UserDTO> list() {
         return this.userService.list();
@@ -60,6 +64,7 @@ public class UserController {
 
     @Operation(summary = "Update User", description = "Update User")
     @ApiResponse(responseCode = "200", description = "Update User")
+    @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.userId")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
         return userService.update(id, userDTO)
@@ -71,6 +76,7 @@ public class UserController {
 
     @Operation(summary = "Deactivate User", description = "Deactivate User")
     @ApiResponse(responseCode = "204", description = "User deactivated")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deactivate(@PathVariable Long id) {
         return userService.deactivateUser(id)
