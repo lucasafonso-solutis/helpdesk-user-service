@@ -40,6 +40,11 @@ public class JwtService {
         return extractAllClaims(token).get("role", String.class);
     }
 
+    public Long extractUserId(String token) {
+        Number userId = extractAllClaims(token).get("userId", Number.class);
+        return userId == null ? null : userId.longValue();
+    }
+
     public boolean isTokenValid(String token) {
         try {
             Claims claims = extractAllClaims(token);

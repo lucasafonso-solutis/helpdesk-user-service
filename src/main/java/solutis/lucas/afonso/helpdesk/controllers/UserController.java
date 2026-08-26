@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -67,11 +67,9 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.userId")
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
-        return userService.update(id, userDTO)
-                .stream()
-                .findFirst()
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        UserDTO updatedUser = userService.update(id, userDTO);
+        
+        return ResponseEntity.ok(updatedUser);
     }
 
     @Operation(summary = "Deactivate User", description = "Deactivate User")
