@@ -20,15 +20,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import solutis.lucas.afonso.helpdesk.dto.UserDTO;
 import solutis.lucas.afonso.helpdesk.dto.UserForm;
+import solutis.lucas.afonso.helpdesk.dto.UserSummaryDTO;
+import solutis.lucas.afonso.helpdesk.repository.UserRepository;
 import solutis.lucas.afonso.helpdesk.services.UserService;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
     private UserService userService;
+    private UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Operation(summary = "Create User", description = "Create User")
@@ -60,6 +64,15 @@ public class UserController {
     @GetMapping
     public List<UserDTO> list() {
         return this.userService.list();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/summary")
+    public ResponseEntity<UserSummaryDTO> summary(@PathVariable Long id) {
+        return userRepository.findById(id)
+                .filter(user -> Boolean.TRUE.equals(user.getActive()))
+                .map(user -> ResponseEntity.ok(new UserSummaryDTO(user)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Update User", description = "Update User")
